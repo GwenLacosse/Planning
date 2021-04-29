@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MYW</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div>
+            <label for="Horizontal">
+                Mode Horizontal
+                <input type="checkbox" name="" id="Horizontal" checked>
+            </label>
+        </div>
+    </div>
+    <main class="container" id="containerGrid">
+        <div class="wrapper">
+            <h4>John <span class="total"></span></h4>
+            
+            <div class="grid">
+            </div>
+        </div>
+
+        <div class="wrapper">
+            <h4>Jane <span class="total"></span></h4>
+            
+            <div class="grid">
+            </div>
+        </div>
+        
+    </main>
+    
+</body>
+
+<script defer>
+    const checkedHorizontalMode = document.querySelector('#Horizontal');
+    checkedHorizontalMode.addEventListener('input', (e) => {
+        if (!checkedHorizontalMode.checked) {
+            document.querySelector('#containerGrid').style.flexDirection = 'row'
+            document.querySelectorAll('.grid').forEach((grid) => {
+                grid.style.gridTemplateRows = 'repeat(12, 1fr)'
+                grid.style.gridTemplateColumns = 'none'
+            })
+        } else {
+            document.querySelector('#containerGrid').removeAttribute('style')
+            document.querySelectorAll('.grid').forEach((grid) => {
+                grid.removeAttribute('style')
+            })
+        }
+        
+    })
+    
+
+    let isClicked = false;
+
+    const grids = document.querySelectorAll('.grid')
+    grids.forEach((grid) => {
+        let i = 7
+
+        let randomColorTab = []
+        for (j = 0; j < 3; j++) {
+            randomColorTab.push(Math.round(Math.random() * (255 - 0) + 0))
+        }
+        let randomColor = `rgb(${randomColorTab.join(', ')})`
+
+        while (grid.children.length < 12) {
+            let div = document.createElement('div')
+            let span = document.createElement('span')
+            div.classList.add('time')
+            span.classList.add('timer')
+            span.innerText = `${i}h00`
+            
+            div.append(span)
+            div.addEventListener('mouseenter', (e) => {
+                if (isClicked) e.target.classList.toggle('selected')
+                if (div.classList.contains('selected')) {
+                    div.style.background = randomColor
+                } else {
+                    div.removeAttribute('style')
+                }
+            })
+            div.addEventListener('mousedown', (e) => {
+                e.target.classList.toggle('selected')
+                if (div.classList.contains('selected')) {
+                    div.style.background = randomColor
+                } else {
+                    div.removeAttribute('style')
+                }
+            })
+            i++
+            grid.append(div)
+        }
+        grid.addEventListener('mousedown', (e) => {
+            isClicked = true
+        })
+        grid.addEventListener('mouseup', (e) => {
+            isClicked = false
+            let count = 0 
+            count = grid.querySelectorAll('.selected')?.length ?? 0
+            grid.parentElement.querySelector('.total').innerHTML = `Total: ${count}h`
+        })
+    })
+    
+
+</script>
+</html>
